@@ -1,5 +1,7 @@
 # Creative Technology Portfolio
 
+**在线体验：[https://7zky.github.io/showme_web/](https://7zky.github.io/showme_web/)**
+
 A creative technology and AI product portfolio built with React, TypeScript, and Vite.
 
 ## Local development
