@@ -1,0 +1,45 @@
+.selected-works{position:relative;z-index:3;background:transparent;padding:12vh 5vw 65px;scroll-margin-top:0}
+.works-heading{position:absolute;left:6vw;top:12vh;width:29vw;padding:0}
+.works-kicker{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:1.3px;padding-top:0;gap:16px}
+.works-heading h2{position:relative;font-size:clamp(36px,4.6vw,72px);font-weight:400;line-height:.94;letter-spacing:-.075em;margin:30px 0}
+.works-heading h2>span{padding-left:0;color:#536875}.works-heading sup{font-size:10px;letter-spacing:0;vertical-align:top;display:inline-block;margin:8px 0 0 14px}
+.works-intro{display:block;margin:0}.works-intro>p{font-size:clamp(16px,1.45vw,22px);line-height:1.65;letter-spacing:-.5px;margin:0 0 20px}
+.works-intro>div p{font-size:10px;line-height:1.95;margin:0 0 15px;color:#617582}
+.works-grid{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));column-gap:1vw;row-gap:0}.work{min-width:0;margin:0}
+/* A fixed editorial composition: irregular positions and gaps, stable on every visit. */
+.work-feature{grid-column:15/25;grid-row:1}
+.work-large{grid-column:2/13;grid-row:2;margin-top:6vh}
+.work-small{grid-column:3/12;grid-row:3;margin-top:19vh}
+.work-wide{grid-column:14/24;grid-row:4;margin-top:-7vh}
+.work-data{grid-column:2/14;grid-row:5;margin-top:13vh}
+.work-bank{grid-column:16/25;grid-row:6;margin-top:-2vh}
+.work-closing{grid-column:4/15;grid-row:7;margin-top:21vh}
+.work-statement{max-width:82%;margin:24px 0 0 auto;color:#435762;font-family:Georgia,"Songti SC","STSong",serif;font-size:clamp(15px,1.4vw,21px);line-height:1.8;letter-spacing:0}
+.work-large .work-statement,.work-small .work-statement,.work-data .work-statement,.work-closing .work-statement{margin-right:auto;margin-left:0}
+.work-media{position:relative;aspect-ratio:var(--media-ratio);background:transparent}
+.work-visual{position:absolute;inset:0;overflow:hidden;background:var(--media-color);opacity:.82;
+  -webkit-mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.12) 5%,rgba(0,0,0,.6) 13%,#000 24%,#000 76%,rgba(0,0,0,.6) 87%,rgba(0,0,0,.12) 95%,transparent),linear-gradient(0deg,transparent,rgba(0,0,0,.12) 5%,rgba(0,0,0,.6) 13%,#000 24%,#000 76%,rgba(0,0,0,.6) 87%,rgba(0,0,0,.12) 95%,transparent);
+  mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.12) 5%,rgba(0,0,0,.6) 13%,#000 24%,#000 76%,rgba(0,0,0,.6) 87%,rgba(0,0,0,.12) 95%,transparent),linear-gradient(0deg,transparent,rgba(0,0,0,.12) 5%,rgba(0,0,0,.6) 13%,#000 24%,#000 76%,rgba(0,0,0,.6) 87%,rgba(0,0,0,.12) 95%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+}
+.work-visual>img,.work-visual>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .55s,transform 1.2s cubic-bezier(.2,.65,.3,1)}
+.work-visual>video{opacity:0}.work-media.is-playing .work-visual>video{opacity:1}.work-media.is-playing .work-visual>img{opacity:0}
+.work-duration{position:absolute;bottom:18px;z-index:2;color:#fff;font-size:9px;letter-spacing:1px;text-shadow:0 1px 6px #0009}.work-duration{left:19px;pointer-events:none;padding:5px 7px;background:#16253366}
+.work-controls{position:absolute;right:18px;bottom:18px;z-index:2;display:flex;gap:6px;align-items:center}
+.preview-toggle,.reset-preview{border:1px solid #ffffff70;background:#1725328c;color:#fff;padding:8px 10px;display:flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.4px;transition:background .3s}
+.preview-toggle:hover,.reset-preview:hover{background:#172532d9}.preview-toggle>span,.reset-preview>span{font-size:13px}
+.work-caption{display:flex;align-items:flex-start;gap:14px;padding-top:18px}.work-number{font-size:9px;letter-spacing:1px;padding-top:8px;color:#718390}
+.work-caption h3{font-size:clamp(17px,1.55vw,23px);font-weight:400;line-height:1.3;margin:0;letter-spacing:-.8px}.work-caption h3>span{display:inline-block;font-size:20px;opacity:0;transform:translate(-4px,4px);margin-left:15px;transition:opacity .3s,transform .3s}.work-caption a:hover h3>span{opacity:1;transform:none}
+.work-caption p{font-size:10px;color:#6a7d89;margin:9px 0 0}.work-category{margin-left:auto;font-size:8px;color:#71818c;letter-spacing:.5px;padding-top:10px;white-space:nowrap}.work-small .work-category,.work-bank .work-category{display:none}
+.works-end{margin-top:130px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #62778540;padding:26px 0 0;font-size:8px;letter-spacing:1.5px;color:#667b88}.works-end a{font-size:10px;letter-spacing:.5px}.works-end a>span{margin-left:15px;font-size:17px}
+@media(max-width:800px){
+.selected-works{padding:70px 6vw 35px;scroll-margin-top:0}
+.works-heading{position:static;width:auto;padding:0;margin-bottom:50px;max-width:86%}
+.works-heading h2{font-size:clamp(36px,8vw,58px);margin:23px 0}.works-heading h2 br{display:none}.works-heading h2>span{padding-left:12px}.works-heading sup{font-size:9px;margin:8px 0 0 12px}
+.works-kicker{font-size:7px;letter-spacing:1px;justify-content:flex-start;gap:35px}.works-intro{display:flex;gap:25px;margin:0}.works-intro>p{font-size:18px;white-space:nowrap;margin:0}.works-intro>div p{font-size:9px;line-height:1.8}.works-intro>div p:last-child{display:none}
+.works-grid{display:block}.work{width:92%;margin:0 0 85px}.work:nth-child(odd){margin-left:auto}.work:nth-child(even){margin-left:0}.work-closing{margin-bottom:0}
+.work-caption{gap:12px;padding-top:17px}.work-caption h3{font-size:19px}.work-category{display:none}.work-duration{bottom:10px;left:10px;font-size:8px}.work-controls{right:10px;bottom:10px;gap:4px}.preview-toggle,.reset-preview{font-size:8px;padding:7px 8px}.work-statement{max-width:88%;font-size:15px;line-height:1.8;margin-top:26px}
+.works-end{margin-top:60px;gap:20px;font-size:6px;line-height:1.5}
+}
+@media(max-width:420px){.works-intro{display:block}.works-intro>p{margin-bottom:15px}.works-intro>div p{font-size:10px}.work{width:96%}.work-statement{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.work-visual>img,.work-visual>video,.work-caption h3>span{transition:none!important;transform:none!important}}

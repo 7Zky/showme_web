@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.tsbuildinfo
+PROJECT_CONTEXT.md
+assets/AI_Gift/
+assets/RAG_example/
+assets/project_vid/
