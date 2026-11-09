@@ -1,9 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /** Inertia uses native scroll positions, keeping sticky layers and anchors aligned. */
 export function useSmoothScroll(enabled: boolean) {
+  const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 801px) and (pointer: fine)').matches);
   useEffect(() => {
-    if (!enabled) return;
+    const media = matchMedia('(min-width: 801px) and (pointer: fine)');
+    const change = () => setDesktop(media.matches);
+    media.addEventListener('change', change);
+    return () => media.removeEventListener('change', change);
+  }, []);
+  useEffect(() => {
+    if (!enabled || !desktop) return;
     let frame = 0;
     let current = window.scrollY;
     let target = current;
@@ -65,5 +72,5 @@ export function useSmoothScroll(enabled: boolean) {
       window.removeEventListener('resize', stop);
       document.removeEventListener('visibilitychange', stop);
     };
-  }, [enabled]);
+  }, [enabled, desktop]);
 }

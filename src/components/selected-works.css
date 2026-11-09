@@ -1,7 +1,7 @@
 .selected-works{position:relative;z-index:3;background:transparent;padding:12vh 5vw 65px;scroll-margin-top:0}
 .works-heading{position:absolute;left:6vw;top:12vh;width:29vw;padding:0}
 .works-kicker{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:1.3px;padding-top:0;gap:16px}
-.works-heading h2{position:relative;font-size:clamp(36px,4.6vw,72px);font-weight:400;line-height:.94;letter-spacing:-.075em;margin:30px 0}
+.works-heading h2{position:relative;font-size:clamp(36px,4.6vw,72px);font-weight:400;line-height:.94;letter-spacing:-0.5px;margin:30px 0;font-family: math;}
 .works-heading h2>span{padding-left:0;color:#536875}.works-heading sup{font-size:10px;letter-spacing:0;vertical-align:top;display:inline-block;margin:8px 0 0 14px}
 .works-intro{display:block;margin:0}.works-intro>p{font-size:clamp(16px,1.45vw,22px);line-height:1.65;letter-spacing:-.5px;margin:0 0 20px}
 .works-intro>div p{font-size:10px;line-height:1.95;margin:0 0 15px;color:#617582}

@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
-import { ReliefScene } from './components/ReliefScene';
+const ReliefScene = lazy(() => import('./components/ReliefScene').then(module => ({ default: module.ReliefScene })));
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { site } from './content/site';
 import { SelectedWorks } from './components/SelectedWorks';
 
 export default function App() {
-  const [aiMode, setAiMode] = useState(() => location.hash === '#ai');
+  const [aiMode, setAiMode] = useState(() => location.hash !== '#works');
   const changeMode = (ai: boolean) => {
     setAiMode(ai);
     history.replaceState(null, '', ai ? '#ai' : '#works');
   };
   useEffect(() => {
-    const hashChange = () => { if (['#home', '#works', '#ai'].includes(location.hash)) setAiMode(location.hash === '#ai'); };
+    const hashChange = () => { if (['#home', '#works', '#ai'].includes(location.hash)) setAiMode(location.hash !== '#works'); };
     window.addEventListener('hashchange', hashChange);
     return () => window.removeEventListener('hashchange', hashChange);
   }, []);
@@ -69,7 +69,7 @@ export default function App() {
       animation?.revert();
     };
   }, [menu, motion]);
-  return <div ref={root} className={`portfolio ${aiMode ? 'is-ai' : ''} ${!motion ? 'motion-off' : ''}`}>
+  return <div ref={root} className={`portfolio ${aiMode ? 'is-ai' : 'is-creative'} ${!motion ? 'motion-off' : ''}`}>
     <a href="#main" className="skip-link">跳至主要内容</a>
     <header className="header">
       <a href="#home" className="brand" aria-label="Portfolio 首页"><span className="brand-mark">z</span><span>CREATIVE<br/>INTELLIGENCE</span></a>
@@ -78,13 +78,15 @@ export default function App() {
     </header>
     {menu && <nav id="navigation" aria-label="主导航" className="navigation">
       <div className="nav-label">EXPLORE THE PORTFOLIO</div>
-      {site.navigation.map((item, i) => item.available ? <a key={item.target} href={`#${item.target}`} onClick={() => { setMenu(false); setAiMode(item.target === 'ai'); }}><small>0{i + 1}</small>{item.label}<span>↗</span></a> : <div className="nav-pending" key={item.target}><small>0{i + 1}</small>{item.label}<em>即将呈现</em></div>)}
+      {site.navigation.map((item, i) => item.available ? <a key={item.target} href={`#${item.target}`} onClick={() => { setMenu(false); setAiMode(item.target !== 'works'); }}><small>0{i + 1}</small>{item.label}<span>↗</span></a> : <div className="nav-pending" key={item.target}><small>0{i + 1}</small>{item.label}<em>即将呈现</em></div>)}
       <p>Creative technology. Human possibilities.</p>
     </nav>}
     <main id="main">
       <section id="home" className="hero" aria-label={site.title.join('. ')}>
         <div className="hero-stage">
-        <ReliefScene motion={motion} dark={aiMode} />
+        <Suspense fallback={<div className="relief-scene loading" aria-hidden="true"><div className="relief-fallback"/><span className="model-status">LOADING SCULPTURE</span></div>}>
+          <ReliefScene motion={motion} dark={!aiMode} />
+        </Suspense>
         <div className="hero-wash"/>
         </div>
         <div className="hero-opening">
@@ -94,7 +96,11 @@ export default function App() {
           <div className="hero-bottom hero-detail"><p>{site.subtitle}</p><span className="discipline">创意技术 · 交互体验 · AI 产品</span></div>
         </div>
         <div className="scene-caption hero-detail"><span>01 — A STUDY IN RELIEF</span><span>MOVE TO REVEAL / PAUSE TO DISCOVER</span></div>
-        <div className="hero-footer hero-detail"><a className="scroll-cue" href="#relief-scroll"><span>↓</span> SCROLL TO DISCOVER</a><span className="page-index">RELIEF JOURNEY <span className="journey-track"><i/></span></span></div>
+        <div className="hero-footer hero-detail">
+          <a className="scroll-cue" href="#relief-scroll">
+            {/* <span>↓</span>  */}
+            SCROLL TO DISCOVER</a>
+          <span className="page-index">RELIEF JOURNEY <span className="journey-track"><i/></span></span></div>
         </div>
         <div id="relief-scroll" className="journey-anchor" aria-hidden="true"/>
         <SelectedWorks motion={motion} aiMode={aiMode} onModeChange={changeMode} />

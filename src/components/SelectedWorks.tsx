@@ -27,7 +27,11 @@ function WorkPreview({ project, index, active, onToggle, onStop }: {
     return () => { observer.disconnect(); document.removeEventListener('visibilitychange', visibility); };
   }, []);
   useEffect(() => { if (active && !visible) onStop(); }, [active, visible, onStop]);
-  useEffect(() => { if (visible || active) setLoaded(true); }, [visible, active]);
+  useEffect(() => {
+    if (visible || active) { setLoaded(true); return; }
+    const timer = window.setTimeout(() => setLoaded(false), 15000);
+    return () => clearTimeout(timer);
+  }, [visible, active]);
   useEffect(() => {
     const player = video.current;
     if (!player || !loaded) return;
@@ -51,7 +55,10 @@ function WorkPreview({ project, index, active, onToggle, onStop }: {
     <div className={`work-media ${playing ? 'is-playing' : ''}`}>
       <div className="work-visual">
         <img src={mediaPath(project, 'poster.jpg')} alt={`${project.name}项目画面`} loading="lazy" decoding="async"/>
-        {loaded && <video ref={video} src={mediaPath(project, active ? 'film.mp4' : 'preview.mp4')} poster={mediaPath(project, 'poster.jpg')} muted loop playsInline preload="none" aria-hidden="true" tabIndex={-1}/>}
+        {loaded && <video key={active ? 'full' : 'loop'} ref={video} poster={mediaPath(project, 'poster.jpg')} muted loop playsInline preload="none" aria-hidden="true" tabIndex={-1}>
+          <source src={mediaPath(project, active ? 'film-mobile.mp4' : 'preview-mobile.mp4')} media="(max-width: 800px)" type="video/mp4"/>
+          <source src={mediaPath(project, active ? 'film.mp4' : 'preview.mp4')} type="video/mp4"/>
+        </video>}
       </div>
       <span className="work-duration">{project.duration}</span>
       <div className="work-controls">
@@ -95,6 +102,7 @@ export function SelectedWorks({ motion, aiMode, onModeChange }: { motion: boolea
       if (location.hash === '#home') window.scrollTo({ top: 0, behavior: 'instant' });
     });
     if (!motion || viewAI !== aiMode) return () => cancelAnimationFrame(refresh);
+    const desktopMotion = gsap.matchMedia();
     const context = gsap.context(() => {
       gsap.from('.works-heading .heading-content', { y: 18, opacity: 0, duration: .7 });
       if (viewAI) {
@@ -106,28 +114,31 @@ export function SelectedWorks({ motion, aiMode, onModeChange }: { motion: boolea
         gsap.utils.toArray<HTMLElement>('.work').forEach(work => {
           gsap.from(work, { y: 55, opacity: 0, duration: 1, ease: 'power2.out',
             scrollTrigger: { trigger: work, start: 'top 94%', once: true } });
-          if (matchMedia('(min-width: 801px)').matches) {
+
+        });
+        desktopMotion.add('(min-width: 801px) and (pointer: fine)', () => {
+          gsap.utils.toArray<HTMLElement>('.work', section.current).forEach(work => {
             gsap.fromTo(work.querySelector('.work-media'), { yPercent: 4 }, { yPercent: -4, ease: 'none',
               scrollTrigger: { trigger: work, start: 'top bottom', end: 'bottom top', scrub: .8 } });
             gsap.fromTo(work.querySelector('.work-statement'), { y: 18 }, { y: -18, ease: 'none',
               scrollTrigger: { trigger: work, start: 'top bottom', end: 'bottom top', scrub: 1.1 } });
-          }
+          });
         });
       }
     }, section);
-    return () => { cancelAnimationFrame(refresh); context.revert(); };
+    return () => { cancelAnimationFrame(refresh); desktopMotion.revert(); context.revert(); };
   }, [motion, viewAI, aiMode]);
   return <section id="works" className="selected-works" ref={section} aria-labelledby="works-title" aria-busy={switching}>
     <span id="ai" className="ai-anchor" aria-hidden="true"/>
     <div className="works-heading">
       <div className="works-kicker"><span>02 / SELECTED WORKS</span><span>{viewAI ? '02 CASES' : '07 PROJECTS'}</span></div>
-      <div className="works-switch" role="tablist" aria-label="作品类别" onKeyDown={event => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) && !switching) { event.preventDefault(); const ai = event.key === 'End' || (event.key !== 'Home' && !viewAI); onModeChange(ai); document.getElementById(ai ? 'ai-tab' : 'creative-tab')?.focus(); } }}>
-        <button id="creative-tab" role="tab" aria-selected={!viewAI} aria-controls="creative-panel" aria-disabled={switching} onClick={() => { if (!switching) onModeChange(false); }}>交互项目</button>
+      <div className="works-switch" role="tablist" aria-label="作品类别" onKeyDown={event => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) && !switching) { event.preventDefault(); const ai = event.key === 'Home' || (event.key !== 'End' && !viewAI); onModeChange(ai); document.getElementById(ai ? 'ai-tab' : 'creative-tab')?.focus(); } }}>
         <button id="ai-tab" role="tab" aria-selected={viewAI} aria-controls="ai-panel" aria-disabled={switching} onClick={() => { if (!switching) onModeChange(true); }}>AI 产品 <span aria-hidden="true">↗</span></button>
+        <button id="creative-tab" role="tab" aria-selected={!viewAI} aria-controls="creative-panel" aria-disabled={switching} onClick={() => { if (!switching) onModeChange(false); }}>交互项目</button>
       </div>
       <div className="heading-content" key={viewAI ? 'ai' : 'creative'}>
         <h2 id="works-title">{viewAI ? <>AI<br/><span>Products</span><sup>(02)</sup></> : <>Selected<br/><span>Works</span><sup>(07)</sup></>}</h2>
-        <div className="works-intro">{viewAI ? <><p>让智能，走进<br/>真实的使用情境。</p><div><p>从知识问答，到情感共创。<br/>连接用户需求、交互与技术实现。</p><p>一个可运行的 RAG 应用，<br/>与一份 AI 礼品产品设计实践。</p></div></> : <><p>把技术，变成<br/>可感知的体验。</p><div><p>空间交互、数字展陈与数据可视化。<br/>让创意在真实场景中落地。</p><p>担任项目主负责人，负责开发制作，<br/>并在部分项目中参与需求制定与方案确认。</p></div></>}</div>
+        <div className="works-intro">{viewAI ? <><p>让智能，走进<br/>真实的使用情境。</p><div><p>从情感共创，到知识问答。<br/>连接用户需求、交互与技术实现。</p><p>以 AI 礼品向导为产品主案例，<br/>呈现需求分析、交互设计与交付思考。</p></div></> : <><p>把技术，变成<br/>可感知的体验。</p><div><p>空间交互、数字展陈与数据可视化。<br/>让创意在真实场景中落地。</p><p>担任项目主负责人，负责开发制作，<br/>在部分项目中参与需求沟通与方案确认，<br/>将业务需求转化为可落地的交互体验。</p></div></>}</div>
       </div>
     </div>
     <span className="mode-announcement" role="status">{switching ? '正在切换作品类别' : viewAI ? '已显示 AI 产品案例' : '已显示交互项目'}</span>
